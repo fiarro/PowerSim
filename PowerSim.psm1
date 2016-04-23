@@ -6,7 +6,7 @@
 
     [platform]$Platform
 
-    [action[]]$Action
+    [actor[]]$Actor
 
 
     [bool] InitialiseEnvironment() {
@@ -23,9 +23,9 @@
     [array] Simulate() {
     
         $artifacts = @()
-        # For each Action
+        # For each Actor
 
-            # Execute the Action & add any Artifacts returned to the $artifacts list
+            # Execute their Action & add any Artifacts returned to the $artifacts list
         
         return $artifacts
     }
@@ -53,6 +53,16 @@
 }
 
 class Platform {
+
+    name
+    driver
+    networks
+    nodes
+    applications
+
+    deploy()
+    verify()
+    destroy()a
 
 }
 
