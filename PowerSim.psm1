@@ -84,6 +84,13 @@ class SimEnvironment {
     [SimApplication[]]$Application
 
 
+    [void] Publish($Driver) {
+    
+        # Compile a configuration file with the correct $Driver (ie DSC) format
+
+        # Save the configuration file to the correct location specified by $Driver
+    } 
+
 }
 
 class SimActor {
