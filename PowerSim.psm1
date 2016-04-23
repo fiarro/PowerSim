@@ -2,54 +2,29 @@
 
     [string]$Name
 
-    [simenvironment]$Environment
-
-    [simplatform]$Platform
-
     [simactor[]]$Actor
 
 
-    [bool] InitialiseEnvironment() {
-        
-        # Initialise the Environment on the Platform
-
-        # If the Initialisation process is successful
-
-            return $true
-
-        # Else return false
-    }
-
-    [array] Simulate() {
+    [array] Simulate($Environment) {
     
         $artifacts = @()
         # For each Actor
 
-            # Execute their Action & add any Artifacts returned to the $artifacts list
+            # Execute their Action in the Environment & add any Artifacts returned to the $artifacts list
         
         return $artifacts
     }
-
-    [bool] DeleteEnvironment() {
-
-        # Delete the Environment on the Platform
-
-        # If the Deletion process is succssful
-
-            return $true
-
-        # Else return false
-    }
     
-    [void] Analyse($Artifacts, $Path) {
-            # For each Artifact 
+    [void] Analyse($Artifacts, $Environment, $Path) {
+            
+        # For each Artifact in the Environment
 
             # Analyse it for known issues or warnings
 
         # Write any issues or warnings to a report
         
         # Save the report file to the Path
-    } 
+    }
 }
 
 class SimPlatform {
@@ -59,19 +34,40 @@ class SimPlatform {
     [ValidateSet('DSC')]
     [string]$Driver
 
-    [bool] Deploy() {
+    [bool] Initialise($Environment) {
 
-        return $True
+        # Deploy the Environment
+
+        # If the deployment is successful
+        
+            return $True
+
+        # Else return False
+
     }
     
-    [bool] Verify() {
+    [bool] Verify($Environment) {
 
-        return $true
+        # Run Operational Tests to validate the Environment
+        
+        # If all the Tests pass 
+        
+            return $true
+
+        # Else return false
+
     }
 
-    [bool] Destroy() {
+    [bool] Delete($Environment) {
 
-        return $true
+        # Destroy the Environment
+
+        # If the Environment is detroyed successfully
+
+            return $true
+
+        # Else return false
+
     }
 
 }
