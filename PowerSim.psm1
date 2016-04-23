@@ -2,7 +2,7 @@
 
     [string]$Name
 
-    [simactor[]]$Actor
+    [SimActor[]]$Actor
 
 
     [array] Simulate($Environment) {
@@ -15,7 +15,7 @@
         return $artifacts
     }
     
-    [void] Analyse($Artifacts, $Environment, $Path) {
+    [SimAnalysis] Analyse($Artifacts, $Environment, $Path) {
             
         # For each Artifact in the Environment
 
@@ -33,6 +33,7 @@ class SimPlatform {
 
     [ValidateSet('DSC')]
     [string]$Driver
+
 
     [bool] Initialise($Environment) {
 
@@ -76,11 +77,11 @@ class SimEnvironment {
 
     [string]$Name
 
-    [simnetwork[]]$Network
+    [SimNetwork[]]$Network
 
-    [simnode[]]$Node
+    [SimNode[]]$Node
 
-    [simapplication[]]$Application
+    [SimApplication[]]$Application
 
 
 }
@@ -114,5 +115,9 @@ class SimNode {
 }
 
 class SimApplication {
+
+}
+
+class SimAnalysis {
 
 }
