@@ -1,11 +1,33 @@
 ﻿class Simulation {
+    <#
+        Using the Simulation class you can define actions across multiple systems to simulate complex real-world situations
+        
+        The Simulation class needs to be used along side an instance of the Environment class where it will be run
+        
+        NAME - The name of the Simulation
 
+        ACTOR - An Array of Actor objects that will carry out the Simulation 
+
+        Example 1
+        
+        This example creates a new Simulation
+
+        $mySim = New-Object 'Simulation' -Property @{Name='Complex Simulation'; Actor=@($Actor1, $Actor2, $Actor3)}
+
+        Example 2
+
+        This example shows a Simulation being run & analysed
+
+        $artifacts = $mySim.Run($MySimEnvironment)
+
+        $analysis = $mySim.Analyse($artifacts, $mySimEnvironment)
+    #>
     [string]$Name
 
     [SimActor[]]$Actor
 
 
-    [array] Simulate($Environment) {
+    [array] Run($Environment) {
     
         $artifacts = @()
         # For each Actor
@@ -15,7 +37,7 @@
         return $artifacts
     }
     
-    [SimAnalysis] Analyse($Artifacts, $Environment, $Path) {
+    [SimAnalysis] Analyse($Artifacts, $Environment) {
             
         # For each Artifact in the Environment
 
@@ -23,7 +45,7 @@
 
         # Write any issues or warnings to a report
         
-        # Save the report file to the Path
+        # Return the Analysis object
 
         return New-Object 'SimAnalysis'
 
