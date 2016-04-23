@@ -24,6 +24,9 @@
         # Write any issues or warnings to a report
         
         # Save the report file to the Path
+
+        return New-Object 'SimAnalysis'
+
     }
 }
 
@@ -35,7 +38,7 @@ class SimPlatform {
     [string]$Driver
 
 
-    [bool] Initialise($Environment) {
+    [bool] InitialiseEnvironment($Environment) {
 
         # Deploy the Environment
 
@@ -47,7 +50,7 @@ class SimPlatform {
 
     }
     
-    [bool] Verify($Environment) {
+    [bool] VerifyEnvironment($Environment) {
 
         # Run Operational Tests to validate the Environment
         
@@ -59,7 +62,7 @@ class SimPlatform {
 
     }
 
-    [bool] Delete($Environment) {
+    [bool] DeleteEnvironment($Environment) {
 
         # Destroy the Environment
 
@@ -89,7 +92,12 @@ class SimEnvironment {
         # Compile a configuration file with the correct $Driver (ie DSC) format
 
         # Save the configuration file to the correct location specified by $Driver
-    } 
+    }
+    
+    [System.IO.File] Compile($Driver) {
+    
+        # Compiles a configuration file that is valid for the SimDriver provided
+    }
 
 }
 
@@ -126,5 +134,9 @@ class SimApplication {
 }
 
 class SimAnalysis {
+
+}
+
+class SimDriver {
 
 }
