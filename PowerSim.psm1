@@ -2,11 +2,11 @@
 
     [string]$Name
 
-    [environment]$Environment
+    [simenvironment]$Environment
 
-    [platform]$Platform
+    [simplatform]$Platform
 
-    [actor[]]$Actor
+    [simactor[]]$Actor
 
 
     [bool] InitialiseEnvironment() {
@@ -52,32 +52,71 @@
     } 
 }
 
-class Platform {
+class SimPlatform {
 
-    name
-    driver
-    networks
-    nodes
-    applications
+    [string]$Name
 
-    deploy()
-    verify()
-    destroy()a
+    [ValidateSet('DSC')]
+    [string]$Driver
 
-}
+    [bool] Deploy() {
 
-class Environment {
+        return $True
+    }
+    
+    [bool] Verify() {
 
-}
+        return $true
+    }
 
-class Actor {
+    [bool] Destroy() {
 
-}
-
-class Action {
+        return $true
+    }
 
 }
 
-class Artifact {
+class SimEnvironment {
+
+    [string]$Name
+
+    [simnetwork[]]$Network
+
+    [simnode[]]$Node
+
+    [simapplication[]]$Application
+
+
+}
+
+class SimActor {
+
+}
+
+class SimAction {
+
+}
+
+class SimArtifact {
+
+}
+
+class SimNetwork {
+
+}
+
+class SimHost {
+
+}
+
+class SimService {
+
+}
+
+class SimNode {
+
+}
+
+class SimApplication {
 
 }
