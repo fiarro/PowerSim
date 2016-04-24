@@ -76,9 +76,9 @@
 }
 
 class SimPlatform {
-    <#
-        You need to supply a simPlatform to all Simulations. The simPlatform is the underlying platform where the simEnvironment &
-        Simulation will run. Examples of simPlatforms are Azure & Hyper-V.
+    <#be 
+        A simPlatform is the underlying platform where your simEnvironment & Simulation will be run.You need to supply a simPlatform to all Simulations. 
+        Examples of simPlatforms are Azure & Hyper-V.
 
         Attributes
 
@@ -93,7 +93,7 @@ class SimPlatform {
 
         Methods
 
-        BuildEnvironment($Environment) - Use BuildEnvironment() to build a simEnvironment.
+        BuildEnvironment($Environment) - Use BuildEnvironment() to build a new simEnvironment.
         
                                         You need to provide the simEnvironment that you want to build as a parameter to the method.
 
@@ -102,33 +102,54 @@ class SimPlatform {
         InitialiseEnvironment($Environment) - You may need to initialise a simEnvironment before running a Simulation for the first time
                                               or to clean a simEnvironment before running a second Simulation in the same simEnvironment.
                                               IntialiseEnvironment() will make sure the simEnvironment is in the correct state & clean of
-                                              any left over files or settings from previous Simulations without having to rebuild.
+                                              any left over files or settings from previous Simulations without having to re-build.
 
                                               You need to provide the simEnvironment that you want to initialise as a parameter to the method.
 
                                               InitialiseEnvironment() will return $true if the initialisation is successful or $false if not
 
-        VerifyEnvironment($Environment) - 
+        VerifyEnvironment($Environment) - VerifyEnvironment() lets you run operational & security tests against your simEnvironment using Pester to verify everything
+                                          is functioning as you expect before beginning your simulations. It's recommended that you call VerifyEnvrionment() after
+                                          each time you call InitialiseEnvironment()
+
+                                          You need to provide the simEnvironment that you want to verify as a parameter to the method.
+
+                                          VerifyEnvironment() will return $true if the verification tests are successful or $false if not
         
-        DeleteEnvironment($Environment) - 
+        DeleteEnvironment($Environment) - Use DeleteEnvironment() when all your simulations have completed & you no longer need the simEnvironment. It will be completely deleted
+                                          and is not recoverable afterwards.
+
+                                          You need to provide the simEnvironment that you want to delete as a parameter to the method.
+
+                                          DeleteEnvironment() will return $true if the deletion is successful or $false if not
 
         Examples
 
-        Example 1
+        Example 1 
 
-        BuildEnvironment($Environment)
+        Here we see the creation of a simPlatform instance
+
+        $myPlatform = New-Object 'simPlatform' -Property @{Name='Azure'; Driver='PowerSim'}
 
         Example 2
 
-        InitialiseEnvironment($Environment)
+        This example builds a simEnvironment & then initialises & verifies it so that it's ready to run Simulations
 
-        Example 3
+        if ($myPlatform.BuildEnvironment($myEnvironment)) {
 
-        VerifyEnvironment($Environment)
+            if ($myPlatform.InitialiseEnvironment($myEnvironment)) {
+
+                $envStatus = $myPlatform.VerifyEnvironment($myEnvironment)
+
+            }
+
+        }
 
         Example 4
         
-        DeleteEnvironment($Environment)
+        When all your Simulations have completed you may want to delete your simEnvironment which is shown below.
+
+        $myPlatform.DeleteEnvironment($Environment)
 
     #>
     
@@ -190,6 +211,49 @@ class SimPlatform {
 }
 
 class SimEnvironment {
+    <#
+
+        You can run your Simulations in different simEnvironments for comparison & testing. simEnvironments can run on any simPlatform. You need to compile & publish a simEnvironment
+        configuration for each simDriver. A simDriver is responsible for automating the simEnvironment tasks within a simPlatform. Currently the only supported simDriver is PowerSim
+        itself however simDrivers that use 3rd party systems like vagrant can be defined.
+
+        Attributes
+
+        NAME - This is the name of your simEnvironment, it can be anything you like
+
+        NETWORK - This is where you provide a list of all the simNetworks that are part of your simEnvironment
+
+        NODE - The Node attribute holds a list all the simNodes that are part of your simEnvironment
+
+        APPLICATION - This is a list of all the simApplications that are part of your simEnvironment
+        
+        Methods
+        
+        Compile($Driver) - A simEnvironment needs to be compiled for a specific simDriver before it can be used. The Publish() method will do this for you automatically.
+
+                           The Compile() method will return a File object.
+
+        Publish($Driver) - After compiling your simEnvironment you need to publish it so that your simPlatforms can find it. 
+
+                           The Publish() method won't return anything but the compiled simEnvironment configuration file should be created for you in the simDriver path.
+
+        Examples
+        
+        Example 1
+        
+        Below is an example of creating a new simEnvironment instance
+
+        $myEnvironment = New-Object 'simEnvironment' -Property @{Name='QA Environment'; Network=@($network1; $network2); Node=@($node1; $node2; $node3); Application=@($IISWebApp)}
+
+        Example 2 
+
+        Once you have defined a simEnvironment you need to publish it before you can use it in a Simulation. We see an example of that below.
+
+        $myEnvironment.Publish($PowerSimDriver)
+
+        
+    #>
+
 
     [string]$Name
 
@@ -200,16 +264,20 @@ class SimEnvironment {
     [SimApplication[]]$Application
 
 
-    [void] Publish($Driver) {
-    
-        # Compile a configuration file with the correct $Driver (ie DSC) format
-
-        # Save the configuration file to the correct location specified by $Driver
-    }
-    
     [System.IO.File] Compile($Driver) {
     
         # Compiles a configuration file that is valid for the SimDriver provided
+
+        $config = New-Item -Name $this.Name -ItemType File
+
+        return $config
+    }
+
+    [void] Publish($Driver) {
+    
+        # Compile a configuration for the correct simDriver (ie PowerSim) format
+
+        # Save the configuration to a file path specified by simDriver
     }
 
 }
