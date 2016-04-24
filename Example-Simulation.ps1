@@ -10,6 +10,9 @@ Simulate aDatacentreFailure {
         Initialise primaryEnvironment -on Azure -with PowerSim
         Initialise secondaryEnvironment -on Azure -with PowerSim
 
+        Verify aDataCentreFailure -is Ready -in primaryEnvironment -on Hyper-V -with Pester
+        Verify aDataCentreTakeOver -is Ready -in secondaryEnvironment -on Azure -with Pester
+
     }
 
     Stage Start {
@@ -41,6 +44,9 @@ Simulate aDatacentreFailure {
 
         Destroy primaryEnvironment -on Hyper-V -with PowerSim
         Destroy secondaryEnvironment -on Azure -with PowerSim
+
+        Verify aDataCentreFailure -is Destroyed -in primaryEnvironment -on Hyper-V -with Pester
+        Verify aDataCentreTakeOver -is Destroyed -in secondaryEnvironment -on Azure -with Pester
 
     }
 
