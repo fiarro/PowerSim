@@ -1,40 +1,63 @@
 ﻿class Simulation {
     <#
-        Using the Simulation class you can define actions across multiple systems to simulate complex real-world situations
+        Using the Simulation class you can define actions across multiple systems in an environment to simulate complex 
+        real-world situations.
         
-        The Simulation class needs to be used along side an instance of the Environment class where it will be run
+        The Simulation class needs to be used with an instance of the Environment class & Platform class
         
+        Attributes
+            
         NAME - The name of the Simulation
 
         ACTOR - An Array of Actor objects that will carry out the Simulation 
+
+        Methods
+
+        Run($Environment, $Platform) - Use Run() to run your Simulation. You need to supply a simEnvironment object that tells the 
+                                        Simulation where to run. You also need to supply a simPlatform object for where to deploy the
+                                        simEnvironment.
+
+                                        Run() won't return any output
+
+        Analyse($Artifacts, $Environment) - Use Analyse() to check a simEnvironment for simArtifacts created by a Simulation & analyse
+                                            them against expected conditions. You need to supply the simArtifacts you want to check for
+                                            as well as the simEnvironment to be analysed.
+
+                                            Analyse() will return an simAnalysis object that contains the results of the analysis
+       
+        Examples
 
         Example 1
         
         This example creates a new Simulation
 
-        $mySim = New-Object 'Simulation' -Property @{Name='Complex Simulation'; Actor=@($Actor1, $Actor2, $Actor3)}
+        $mySimulation = New-Object 'Simulation' -Property @{Name='Complex Simulation'; Actor=@($Actor1, $Actor2, $Actor3)}
 
         Example 2
 
         This example shows a Simulation being run & analysed
 
-        $artifacts = $mySim.Run($MySimEnvironment)
+        $artifacts = $mySimulation.Run($mySimEnvironment, $mySimPlatform)
 
-        $analysis = $mySim.Analyse($artifacts, $mySimEnvironment)
+        $analysis = $mySimulation.Analyse($artifacts, $mySimEnvironment)
+
     #>
+
     [string]$Name
 
     [SimActor[]]$Actor
 
 
-    [array] Run($Environment) {
+    [void] Run($Environment, $Platform) {
     
-        $artifacts = @()
+        # Build the $Environment on the $Platform
+
+        # Initialise the $Environment on the $Platform
+
         # For each Actor
 
-            # Execute their Action in the Environment & add any Artifacts returned to the $artifacts list
+            # Execute them in the Environment
         
-        return $artifacts
     }
     
     [SimAnalysis] Analyse($Artifacts, $Environment) {
@@ -53,18 +76,86 @@
 }
 
 class SimPlatform {
+    <#
+        You need to supply a simPlatform to all Simulations. The simPlatform is the underlying platform where the simEnvironment &
+        Simulation will run. Examples of simPlatforms are Azure & Hyper-V.
 
+        Attributes
+
+        NAME - The Name value needs to match a supported & pre-defined simPlatform name.
+        
+                Currently only Azure is supported
+
+        DRIVER - The Driver value needs to match a supported & pre-defined Driver. The Driver is responsible for automating & controlling
+                 the simPlatform
+                 
+                 Currently only PowerSim is supported. An example of another Driver that might be implemented is Vagrant
+
+        Methods
+
+        BuildEnvironment($Environment) - Use BuildEnvironment() to build a simEnvironment.
+        
+                                        You need to provide the simEnvironment that you want to build as a parameter to the method.
+
+                                        BuildEnvironment() will return $true if the build is successful or $false if not
+
+        InitialiseEnvironment($Environment) - You may need to initialise a simEnvironment before running a Simulation for the first time
+                                              or to clean a simEnvironment before running a second Simulation in the same simEnvironment.
+                                              IntialiseEnvironment() will make sure the simEnvironment is in the correct state & clean of
+                                              any left over files or settings from previous Simulations without having to rebuild.
+
+                                              You need to provide the simEnvironment that you want to initialise as a parameter to the method.
+
+                                              InitialiseEnvironment() will return $true if the initialisation is successful or $false if not
+
+        VerifyEnvironment($Environment) - 
+        
+        DeleteEnvironment($Environment) - 
+
+        Examples
+
+        Example 1
+
+        BuildEnvironment($Environment)
+
+        Example 2
+
+        InitialiseEnvironment($Environment)
+
+        Example 3
+
+        VerifyEnvironment($Environment)
+
+        Example 4
+        
+        DeleteEnvironment($Environment)
+
+    #>
+    
+    [ValidateSet('Azure')]
     [string]$Name
 
-    [ValidateSet('DSC')]
+    [ValidateSet('PowerSim')]
     [string]$Driver
 
 
-    [bool] InitialiseEnvironment($Environment) {
+    [bool] BuildEnvironment($Environment) {
 
         # Deploy the Environment
 
         # If the deployment is successful
+        
+            return $True
+
+        # Else return False
+
+    }
+
+    [bool] InitialiseEnvironment($Environment) {
+
+        # Initialise the Environment to ensure it is clean of any effects of previous simulations
+
+        # If the initialisation is successful
         
             return $True
 
