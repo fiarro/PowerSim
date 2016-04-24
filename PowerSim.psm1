@@ -13,17 +13,23 @@
 
         Methods
 
-        Run($Environment, $Platform) - Use Run() to run your Simulation. You need to supply a simEnvironment object that tells the 
+        Start($Environment, $Platform) - Use Start() to run your Simulation. You need to supply a simEnvironment object that tells the 
                                         Simulation where to run. You also need to supply a simPlatform object for where to deploy the
                                         simEnvironment.
 
-                                        Run() won't return any output
+                                        Start() won't return any output
 
         Analyse($Artifacts, $Environment) - Use Analyse() to check a simEnvironment for simArtifacts created by a Simulation & analyse
                                             them against expected conditions. You need to supply the simArtifacts you want to check for
                                             as well as the simEnvironment to be analysed.
 
                                             Analyse() will return an simAnalysis object that contains the results of the analysis
+
+        Stop($Environment, $Platform) - Use Stop() to end your Simulation. You need to supply a simEnvironment object that tells the 
+                                        Simulation where it is being run. You also need to supply a simPlatform object for where you deployed the
+                                        simEnvironment.
+
+                                        Stop() won't return any output
        
         Examples
 
@@ -48,15 +54,11 @@
     [SimActor[]]$Actor
 
 
-    [void] Run($Environment, $Platform) {
-    
-        # Build the $Environment on the $Platform
-
-        # Initialise the $Environment on the $Platform
+    [void] Start($Environment, $Platform) {
 
         # For each Actor
 
-            # Execute them in the Environment
+            # Start them in the Environment
         
     }
     
@@ -73,10 +75,19 @@
         return New-Object 'SimAnalysis'
 
     }
+
+    [void] Stop($Environment, $Platform) {
+    
+        # For each Actor
+
+            # Stop them in the Environment
+
+        
+    }
 }
 
 class SimPlatform {
-    <#be 
+    <# 
         A simPlatform is the underlying platform where your simEnvironment & Simulation will be run.You need to supply a simPlatform to all Simulations. 
         Examples of simPlatforms are Azure & Hyper-V.
 
@@ -250,7 +261,6 @@ class SimEnvironment {
         Once you have defined a simEnvironment you need to publish it before you can use it in a Simulation. We see an example of that below.
 
         $myEnvironment.Publish($PowerSimDriver)
-
         
     #>
 
@@ -283,26 +293,43 @@ class SimEnvironment {
 }
 
 class SimActor {
+    <#
 
-}
+        You need to use at least one SimActor in all your Simulations. A SimActor reporesents a system or person in a real-world scenario that is interacting with your SimEnvironment.
+        A SimActor contains a list of SimActions that it performs in your Simulation.
+        
+        SimActors can be re-used in multiple Simulations & you can use multiple instances of the same SimActor within a single Simulation (ie You might want 500 'Email User' Actors to
+        simulate usage of your Exchange Application)
+        
+        Attributes
+        
+        NAME - You can use any label for the Name of your SimActor
 
-class SimAction {
+        ACTIONS - This is a list of all the SimActions that your SimActor will perform in a Simulation
 
-}
+        INSTANCES - You can have multiple instances of the same SimActor in your Simulation. This should be an integer value for how many copies of the SimActor you want to use.
 
-class SimArtifact {
+        MODE - A SimActor can run in 2 Modes, Single or Repeat. In Single mode the SimActor will perform it's SimActions once & then stop. In Repeat mode the Actor will keep repeating
+               it's SimActions until the Simulation ends.
 
+        ASYNCOBJECT - SimActors will use Runspaces to allow them to run in parallel, this attirbute will hold a list of each AsyncObject for all instances of the SimActor. It is 
+                        populated automatically when the SimActor is started so you don't need to worry about this.
+
+        Methods
+
+        Start() - The Simulation will call the Start() method for the SimActor to launch it.
+
+        Stop() - The Simultation will call the Stop() method for the SimActor when the Simulation is finished.
+        
+        Examples
+        
+        Example 1
+        
+        Example 2 
+    #>
 }
 
 class SimNetwork {
-
-}
-
-class SimHost {
-
-}
-
-class SimService {
 
 }
 
@@ -314,7 +341,23 @@ class SimApplication {
 
 }
 
+class SimArtifact {
+
+}
+
 class SimAnalysis {
+
+}
+
+class SimAction {
+
+}
+
+class SimHost {
+
+}
+
+class SimService {
 
 }
 
