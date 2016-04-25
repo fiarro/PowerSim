@@ -563,7 +563,11 @@ class SimDriver {
 
         Verify($Simulation, $Environment, $Platform)
 
-        Analyse($Artifacts, $Simulation, $Environment, $Platform)
+        Start($Simulation, $Environment, $Platform)
+
+        Stop($Simulation, $Environment, $Platform)
+
+        Analyse($Analysis, $Simulation, $Environment, $Platform)
 
         Destroy($Environment, $Platform)
     #>
@@ -592,7 +596,6 @@ class SimAnalysis {
 
     #>
 }
-
 
 class SimHost {
     <#

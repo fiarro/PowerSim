@@ -13,16 +13,16 @@ function Stage {
     Param(
         [ValidateSet('Deploy', 'Start', 'Stop', 'Analyse', 'Destroy')]
         [string]$Stage,
-        [scriptblock]$Simulation
+        [scriptblock]$LifecycleScript
     )
 }
 
 function Build {
     <#
-        Build executes in the Deploy lifecycle stage of a Simulation. It builds the specified Simulation Environment on the Platform selected using the selected Driver
+        Build executes in the Deploy lifecycle stage of a Simulation. It builds the specified SimEnvironment on the SimPlatform selected using the selected SimDriver
     #>
     Param(
-        [string]$SimulationName,
+        [string]$EnvironmentName,
         [ValidateSet('Azure', 'Hyper-V')]
         [string]$on,
         [ValidateSet('PowerSim')]
