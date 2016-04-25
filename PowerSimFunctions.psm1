@@ -50,7 +50,7 @@ function Initialise {
 
 function Verify {
     <#
-        Verify runs Operational & Security Tests using a testing framework like Pester to check & validate the different Simulation stages. It usually runs at least once
+        Verify runs Operational & Security Tests to check & validate the different Simulation stages. It usually runs at least once
         in the Deploy, Start, Stop & Destroy stages
     #>
     Param(
@@ -60,7 +60,7 @@ function Verify {
         [string]$in,
         [ValidateSet('Azure', 'Hyper-V')]
         [string]$on,
-        [ValidateSet('Pester')]
+        [ValidateSet('PowerSim')]
         [string]$with
     )
 
@@ -107,7 +107,9 @@ function Analyse {
         [string]$from,
         [string]$in,
         [ValidateSet('Azure', 'Hyper-V')]
-        [string]$on
+        [string]$on,
+        [ValidateSet('PowerSim')]
+        [string]$with
     )
 
 }
