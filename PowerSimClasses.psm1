@@ -318,9 +318,10 @@ class SimActor {
                   
                   Start() will return an IAsyncResult object that can be used to monitor the state & progress of the SimActor
 
-        Stop() - The Simultation will call the Stop() method for the SimActor when the Simulation is finished.
+        Stop($IAsyncObject) - The Simultation will call the Stop() method for the SimActor when the Simulation is finished. You need to provide a list of IAsyncObjects that control the
+                              Runspaces where each SimActor is running
 
-                 Stop() won't return anything but ensures that all the runspaces are cleaned-up when the SimActor is no longer needed
+                              Stop() won't return anything but ensures that all the runspaces are cleaned-up when the SimActor is no longer needed
         
         Examples
         
@@ -347,12 +348,36 @@ class SimActor {
     [ValidateSet('Single', 'Repeat')]
     [string]$Mode='Single'
     
-    [System.IAsyncResult] Start() {
+    [System.IAsyncResult[]] Start() {
         
+        # For every Instance of the SimActor
+
+            # Start a new Runspace
+
+            # If it is in Single mode
+
+                # For each Action
+
+                    # Run the Action in the runsapce
+
+            # Else
+                
+                # For each Action
+
+                    # Run the Action in the runspace
+
+                # Keep repeating the list of Actions in the Runspace
+
+        # Return a list AsyncObjects that can be used to track the progress of each SimActor instance             
         return [System.IAsyncResult]::New()
+
     }
 
-    [void] Stop() {
+    [void] Stop($IAsyncObject) {
+
+        # For each Runspace represented in $IAsyncObject
+
+            # Kill the Runspace
 
     }
 
@@ -397,6 +422,7 @@ class SimAction {
 
     [void] Invoke() {
 
+        # Run the code in the scriptblock
         $this.Scriptblock.Invoke()
 
     }
@@ -414,47 +440,173 @@ class SimNetwork {
 
         NETWORK - This is the network definition (ie 192.168.0.0)
 
-        SUBNETMASK - The subnet mask bits as an interger (ie 24 = 192.168.0.0/24)
+        SUBNETMASK - The subnet mask
 
-        GATEWAY - The IP address of the networks default gateway device (ie 192.168.0.1)
+        GATEWAY - The IP address of the networks default gateway device
 
         Methods
 
-        Build()
+        Get() - Use Get() when you want to receive the attributes of the SimNetwork
 
-        Initialise()
+                Get() will return a hashtable containing all fo the SimNetwork settings
 
-        Destroy()
+        Set() - The Set() method will change the attribute values of the SimNetwork.
+
+                Set() doesn't return anything
+
+        Examples
+
+        Example 1
+
+        Create a new SimNetwork
+
+        $myNetwork = New-Object 'SimNetwork' -Property @{Name='External DMZ'; Network='192.168.0.0'; SubnetMask='255.255.255.0'; Gateway='192.168.0.1'}
+
+        Example 2
+
+        Save the SimNetwork settings to a variable
+
+        $myNetSettings = $myNetwork.Get()
 
     #>
 
+    [string]$Name
+
+    [string]$Network
+
+    [string]$SubnetMask
+
+    [string]$Gateway
+
+    [hashtable] Get() {
+
+        # Create a hashtable with all the Attributes
+
+        # return the hashtable
+        return [hashtable]::New()
+    }
+
+    [void] Set($Attributes) {
+
+        # For each attribute provided
+
+            # Change the value of the Attribute to the new value
+    }
 }
 
 class SimNode {
+        <#
 
+        A SimNode allows you to define a system in your Simulation environment. The SimPlatform is responsible for converting this to a specific configuration
+        document using a SimDriver.
+
+        Attributes
+
+        NAME - You can provide a Name for your SimNode that will be used as a label in your SimPlatform configuration
+
+        TYPE - You need to define the image to be used (ie Win-Server-2012-R2). These aren't arbitrary and need to be a supported SimNode type
+
+        RESOURCE - This is a hashtable that defines the CPU, Memory, Storage & Network resources that your SimPlatform should assign to the SimNode
+
+        Methods
+
+        Get() - Use Get() when you want to receive the attributes of the SimNode
+
+                Get() will return a hashtable containing all of the SimNode settings
+
+        Set() - The Set() method will change the attribute values of the SimNode.
+
+                Set() doesn't return anything
+
+        Examples
+
+        Example 1
+
+        Create a new SimNode
+
+        $myNode = New-Object 'SimNode' -Property @{Name='DC-01'; Type='Win-Server-2012-R2'; Resource=@{Cpu=2; Memory=2048; Storage=250; Network='External DMZ'}}
+
+        Example 2
+
+        Save the SimNode settings to a variable
+
+        $myNodeSettings = $myNode.Get()
+
+    #>
+
+    [string]$Name
+
+    [ValidateSet('Win-Server-2012-R2')]
+    [string]$Type
+
+    [hashtable]$Resource 
+
+
+    [hashtable] Get() {
+
+        # Create a hashtable with all the Attributes
+
+        # return the hashtable
+        return [hashtable]::New()
+    }
+
+    [void] Set($Attributes) {
+
+        # For each attribute provided
+
+            # Change the value of the Attribute to the new value
+    }
+}
+
+class SimDriver {
+    <#
+
+        A SimDriver manages & automates the different stages of a Simulation. Currently only PowerSIm is supported but it is intended that people can add their own SimDrivers
+        in the future to automate some or all parts of the Simulation
+
+        Attributes
+
+        NAME - The Name of the SimDriver isn't arbitrary & must be a supported driver.
+
+    #>
 }
 
 class SimApplication {
+    <#
+    
+        A SimApplication is an Application within a Simulation (ie an IIS Web App, Exchange, etc)
 
+    #>  
 }
 
 class SimArtifact {
+    <#
 
+        A SimArtifact is anything of interest in the Simulation that is required for Analysis (ie logs, databses, files, etc)
+
+    #>
 }
 
 class SimAnalysis {
+    <#
 
+        A SimAnalysis is an automated diagnostic/analysis process to analyse the results of a Simulation
+
+    #>
 }
 
 
 class SimHost {
+    <#
 
+        A SimHost is a host system providing the SimPlatform (rather than a SimNode used in a Simulation running onhte SimPlatform) 
+    #>
 }
 
 class SimService {
+    <#
 
-}
+        A SimService is a service being provided by the SimPlatform (such as provisioning services for Simulations)
 
-class SimDriver {
-
+    #>
 }
