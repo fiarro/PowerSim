@@ -305,31 +305,128 @@ class SimActor {
         
         NAME - You can use any label for the Name of your SimActor
 
-        ACTIONS - This is a list of all the SimActions that your SimActor will perform in a Simulation
+        ACTION - This is a list of all the SimActions that your SimActor will perform in a Simulation
 
-        INSTANCES - You can have multiple instances of the same SimActor in your Simulation. This should be an integer value for how many copies of the SimActor you want to use.
+        INSTANCE - You can have multiple instances of the same SimActor in your Simulation. This should be an integer value for how many copies of the SimActor you want to use.
 
         MODE - A SimActor can run in 2 Modes, Single or Repeat. In Single mode the SimActor will perform it's SimActions once & then stop. In Repeat mode the Actor will keep repeating
                it's SimActions until the Simulation ends.
 
-        ASYNCOBJECT - SimActors will use Runspaces to allow them to run in parallel, this attirbute will hold a list of each AsyncObject for all instances of the SimActor. It is 
-                        populated automatically when the SimActor is started so you don't need to worry about this.
-
         Methods
 
         Start() - The Simulation will call the Start() method for the SimActor to launch it.
+                  
+                  Start() will return an IAsyncResult object that can be used to monitor the state & progress of the SimActor
 
         Stop() - The Simultation will call the Stop() method for the SimActor when the Simulation is finished.
+
+                 Stop() won't return anything but ensures that all the runspaces are cleaned-up when the SimActor is no longer needed
         
         Examples
         
         Example 1
         
+        Here we see the creation of a SimActor instance that simulates 500 Email Users & runs repeatedly until the Simulation ends
+
+        $myActor = New-Object 'SimActor' -Property @{Name='Email User'; Action=@($Action1; $Action2; $Action3); Instance=500; Mode='Repeat'}
+
         Example 2 
+
+        Below shows how to use Start() on your SimActor & save the iAsyncObjects it outputs to a variable so you can track their running state throughout the Simulation
+
+        $runningActors = $myActor.Start()
+
     #>
+
+    [string]$Name
+
+    [SimAction[]]$Action
+
+    [int]$Instance=1
+
+    [ValidateSet('Single', 'Repeat')]
+    [string]$Mode='Single'
+    
+    [System.IAsyncResult] Start() {
+        
+        return [System.IAsyncResult]::New()
+    }
+
+    [void] Stop() {
+
+    }
+
+
+}
+
+class SimAction {
+    <#
+
+        You can define SimActions that can then be performed by SimActors in a Simulation. SimActions should be small & atomic so that they can be reused
+        by differnet SimActors & Simulations. You can create complex behaviour by chaining SimActions into a larger sequence within a SimActor.
+
+        Attributes
+
+        NAME - This is the Name of the SimAction, it is arbitrary
+
+        SCRIPTBLOCK - The Scriptblock defines the behaviour of the SimAction & is what is executed when you call the Invoke() method
+
+        Methods
+
+        Invoke() - Use Invoke() to execute the code in the SimAction ScriptBlock attribute
+
+        Examples
+
+        Example 1
+
+        Use the below to create a new SimAction
+
+        $myAction = New-Object 'SimAction' -Property @{Name='Read C:\ Contents'; Scriptblock={Get-ChildItem c:\}}
+
+        Example 2
+
+        To execute the action use Invoke() as shown below
+
+        $MyAction.Invoke()
+
+    #>
+
+    [string]$Name
+
+    [scriptblock]$ScriptBlock
+
+    [void] Invoke() {
+
+        $this.Scriptblock.Invoke()
+
+    }
 }
 
 class SimNetwork {
+    <#
+
+        A SimNetwork allows you to define a network in your Simulation environment. The SimPlatform is responsible for converting this to a specific configuration
+        document using a SimDriver.
+
+        Attributes
+
+        NAME - You can provide a Name for your network that will be used as a label in your SimPlatform configuration
+
+        NETWORK - This is the network definition (ie 192.168.0.0)
+
+        SUBNETMASK - The subnet mask bits as an interger (ie 24 = 192.168.0.0/24)
+
+        GATEWAY - The IP address of the networks default gateway device (ie 192.168.0.1)
+
+        Methods
+
+        Build()
+
+        Initialise()
+
+        Destroy()
+
+    #>
 
 }
 
@@ -349,9 +446,6 @@ class SimAnalysis {
 
 }
 
-class SimAction {
-
-}
 
 class SimHost {
 
