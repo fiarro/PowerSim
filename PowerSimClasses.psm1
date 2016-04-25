@@ -97,11 +97,6 @@ class SimPlatform {
         
                 Currently only Azure is supported
 
-        DRIVER - The Driver value needs to match a supported & pre-defined Driver. The Driver is responsible for automating & controlling
-                 the simPlatform
-                 
-                 Currently only PowerSim is supported. An example of another Driver that might be implemented is Vagrant
-
         Methods
 
         BuildEnvironment($Environment) - Use BuildEnvironment() to build a new simEnvironment.
@@ -140,23 +135,15 @@ class SimPlatform {
 
         Here we see the creation of a simPlatform instance
 
-        $myPlatform = New-Object 'simPlatform' -Property @{Name='Azure'; Driver='PowerSim'}
+        $myPlatform = New-Object 'simPlatform' -Property @{Name='Azure'}
 
         Example 2
 
-        This example builds a simEnvironment & then initialises & verifies it so that it's ready to run Simulations
+        This example builds a simEnvironment for a Simulation
 
-        if ($myPlatform.BuildEnvironment($myEnvironment)) {
+        $myPlatform.BuildEnvironment($myEnvironment)
 
-            if ($myPlatform.InitialiseEnvironment($myEnvironment)) {
-
-                $envStatus = $myPlatform.VerifyEnvironment($myEnvironment)
-
-            }
-
-        }
-
-        Example 4
+        Example 3
         
         When all your Simulations have completed you may want to delete your simEnvironment which is shown below.
 
@@ -561,13 +548,24 @@ class SimNode {
 class SimDriver {
     <#
 
-        A SimDriver manages & automates the different stages of a Simulation. Currently only PowerSIm is supported but it is intended that people can add their own SimDrivers
-        in the future to automate some or all parts of the Simulation
+        A SimDriver manages & automates the different stages of a Simulation. Currently only PowerSim is supported but it is intended that people can add their own SimDrivers
+        in the future to automate some or all parts of the Simulation.
 
         Attributes
 
-        NAME - The Name of the SimDriver isn't arbitrary & must be a supported driver.
+        NAME - The Name of the SimDriver isn't arbitrary & must be a pre-defined supported driver.
 
+        Methods
+
+        Build($Environment, $Platform)
+
+        Initialise($Environment, $Platform)
+
+        Verify($Simulation, $Environment, $Platform)
+
+        Analyse($Artifacts, $Simulation, $Environment, $Platform)
+
+        Destroy($Environment, $Platform)
     #>
 }
 
